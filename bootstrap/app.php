@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureUserHasRole;
 use App\Http\Middleware\EnsureUserIsSubscribed;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'subscribed' => EnsureUserIsSubscribed::class,
+            'has_role' => EnsureUserHasRole::class,
         ]);//user has active subscription-AJ
     })
     ->withExceptions(function (Exceptions $exceptions) {

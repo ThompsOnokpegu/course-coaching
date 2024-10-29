@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Middleware\EnsureUserHasRole;
 use Illuminate\Support\Facades\Route;
-use App\http\Middleware\EnsureUserIsSubscribed;
+
 
 Route::view('/', 'welcome');
 
 Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard')->middleware('subscribed');
+    ->middleware(['auth', 'verified','subscribed','has_role'.':user'])
+    ->name('dashboard');
 
 Route::view('profile', 'profile')
     ->middleware(['auth'])
