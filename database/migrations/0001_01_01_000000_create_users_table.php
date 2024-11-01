@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('role')->default('user');
             $table->boolean('is_subscribed')->default(false);
+            $table->string('paystack_customer_code')->nullable();
+            $table->string('paystack_auth_code')->nullable();
+            $table->string('plan_code')->nullable();
             $table->dateTime('subscription_end_date')->nullable();
             $table->rememberToken();
             $table->timestamps();

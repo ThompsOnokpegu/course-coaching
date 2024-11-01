@@ -15,12 +15,11 @@ class EnsureUserIsSubscribed
      */
     public function handle(Request $request, Closure $next): Response
     {
-        
-        if(auth()->guard('web')->user() && auth()->guard('web')->user()->is_subscribed && auth()->guard('web')->user()->subscription_end_date > now()){
-
+        if (auth()->guard('web')->check() && auth()->guard('web')->user()->is_subscribed && auth()->guard('web')->user()->subscription_end_date > now()) {
             return $next($request);
         }
-
-        return redirect()->route('profile')->with('error','Please subscribe to access this content');
+    
+        return redirect()->route('home')->with('error', 'Please subscribe to access this content.');
+        
     }
 }
