@@ -30,9 +30,9 @@ Route::middleware([])->group(function () {
 
 //studend dashboard
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [StudentController::class, 'index'])->name('members');
+    Route::get('/members', [StudentController::class, 'index'])->name('members');
     Route::view('profile','profile')->name('profile');
-    Route::get('/members/{lesson_id}', [StudentController::class, 'lesson'])->name('members.lesson');
+    Route::get('/members/{lesson_id}', [StudentController::class, 'lesson'])->name('members.lesson')->middleware(['subscribed']);
 });
 
 //admin

@@ -25,11 +25,12 @@ new #[Layout('layouts.guest')] class extends Component
 
         switch ($userRole) {
             case 'admin':
-                $this->redirectIntended(default: route('admin.home', absolute: false), navigate: true);
+                $this->redirectIntended(default: route('admin.home', absolute: false));
+                //$this->redirectIntended(default: route('admin.home', absolute: false), navigate: true);
                 break;
             
             default:
-                $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+                $this->redirectIntended(default: route('members', absolute: false));
                 break;
         }   
     }

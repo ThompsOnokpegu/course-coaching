@@ -19,7 +19,7 @@ class EnsureUserIsSubscribed
             return $next($request);
         }
     
-        return redirect()->route('home')->with('error', 'Please subscribe to access this content.');
+        return redirect()->route('profile')->with('error', 'Please subscribe to access this content.');
         
     }
 }
