@@ -8,20 +8,21 @@ use App\Livewire\Admin\ViewTopic;
 use Illuminate\Support\Facades\Route;
 
 
-Route::view('/', 'welcome')->name('home');
-Route::view('/application','choose-plan')->name('signup');
 
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+// Route::view('dashboard', 'dashboard')
+//     ->middleware(['auth', 'verified'])
+//     ->name('dashboard');
+
+// Route::view('profile', 'profile')
+//     ->middleware(['auth'])
+//     ->name('profile');
 
 Route::middleware([])->group(function () {
-    Route::post('/subscription', [SubscriptionController::class, 'initiatePayment'])->name('subscription.initiate');
+    Route::view('/', 'welcome')->name('home');
+    Route::view('/thank-you','thank-you')->name('thank-you');
+    Route::get('/application', [SubscriptionController::class, 'subscribe'])->name('subscription.initiate');
     Route::get('/subscription/callback', [SubscriptionController::class, 'handleCallback'])->name('subscription.callback');
     Route::post('/webhook', [SubscriptionController::class, 'handleWebhook']);
 
@@ -29,13 +30,14 @@ Route::middleware([])->group(function () {
 
 //studend dashboard
 Route::middleware(['auth'])->group(function () {
-    Route::get('/members', [StudentController::class, 'index'])->name('members');
+    Route::get('/dashboard', [StudentController::class, 'index'])->name('members');
+    Route::view('profile','profile')->name('profile');
     Route::get('/members/{lesson_id}', [StudentController::class, 'lesson'])->name('members.lesson');
 });
 
 //admin
 Route::middleware(['auth','has_role'.':admin'])->group(function(){
-    Route::get('/admin/course',CreateCourse::class)->name('admin.home');
+    Route::get('/admin',CreateCourse::class)->name('admin.home');
     Route::get('/admin/course/{id}',ViewCourse::class)->name('course.view');
     Route::get('/admin/topics/{id}',ViewTopic::class)->name('topic.view');
     Route::get('/admin/lessons/{id}/update',UpdateLesson::class)->name('lesson.update');

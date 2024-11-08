@@ -17,26 +17,8 @@ class SubscriptionController extends Controller
         $this->paystack = $paystack;
     }
 
-    // 1. Initiate Payment
-    public function initiatePayment(Request $request)
-    {
-        // Validate email input
-        $request->validate(['email' => 'required|email']);
-        //$request->validate(['plan' => 'required']);
-
-        $email = $request->input('email');
-        //$planCode = $request->input('plan');
-        $planCode = env('PLAN_CODE_MONTLY');
-        $amount = 500; // $5
-        $reference = uniqid('sub_');
-        $callbackUrl = route('home');
-
-        $response = $this->paystack->initiatePayment($email, $amount, $reference, $planCode, $callbackUrl);
-
-        if ($response['status']) {
-            return redirect($response['data']['authorization_url']);
-        }
-        return redirect()->back()->with('error', 'Unable to initiate payment');
+    public function subscribe(Request $request){
+        return view('choose-plan');
     }
     
     public function handleWebhook(Request $request)
@@ -49,11 +31,13 @@ class SubscriptionController extends Controller
                 // Capture the authorization details
                 $authorizationCode = $payload['data']['authorization']['authorization_code'];
                 $email = $payload['data']['customer']['email'];
+                $name = $payload['data']['customer']['first_name'];
                 $planCode = $payload['data']['plan']['plan_code'];
 
                 //create a new user  
                 $user = User::create([
                     'email' => $email,
+                    'name' => $name,
                     'password' => bcrypt(Str::random(12)),
                     'is_subscribed' => true,
                     'subscription_end_date' => now()->addMonth(),

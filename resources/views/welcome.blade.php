@@ -20,7 +20,7 @@
         <section class="bg-white dark:bg-deepr_black-50">
             <div class="py-4 px-4 mx-auto max-w-screen-xl text-center lg:py-5 lg:px-12">
                 
-                <p class="mb-8 text-lg font-bold italic text-black lg:text-xl sm:px-16 xl:px-48">Ads Too Expensive Or Not Profitable?</p>
+                <p class="mb-8 text-lg italic text-black lg:text-xl sm:px-16 xl:px-48">Ads Too Expensive Or Not Profitable?</p>
                 <h1 class="mb-4 -mt-3 font-anton text-2xl font-bold leading-8 sm:leading-loose text-deepr_black-50 md:text-3xl lg:text-5xl">Get 
                     <span class="bg-deepr_green-50">LIVE AD COACHING</span> and <span class="bg-deepr_green-50 leading-8 sm:leading-10">ON-DEMAND TRAINING</span> 
                     From A Top-Rated Ad Expert For Only <span class="bg-deepr_green-50 sm:leading-relaxed">$5/MONTH</span></h1>
@@ -28,8 +28,10 @@
                 <div class="relative" style="padding-top: 56.25%">
                     <iframe class="rounded-md absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/uTKyhVMSNFA?rel=0" frameborder="0" sandbox="allow-forms allow-scripts allow-pointer-lock allow-same-origin allow-top-navigation"></iframe>
                 </div>
-                <button class="justify-center items-center mt-5 py-3 px-5 text-base font-medium text-center bg-deepr_red-50 hover:bg-red-700 text-white" type="submit">Yes, I Want LIVE Coaching On My Ads For Just $5/Month</button>
-                <p class="text-lg italic leading-none mb-4 font-normal text-gray-600">There is NO contract and NO Minimum months.  You can cancel ANYTIME</p>
+                <form action="{{ route('subscription.initiate') }}">
+                    <button type="submit" class="justify-center items-center mt-5 py-3 lg:py-5 px-5 lg:px-7 text-lg font-medium text-center bg-deepr_red-50 hover:bg-red-700 text-white" >Yes, I Want LIVE Coaching On My Ads For Just $5/Month</button>
+                </form>
+                <p class="text-base italic leading-none mb-4 mt-2 font-normal text-gray-600">There is NO contract and NO Minimum months.  You can cancel ANYTIME</p>
             </div>
         </section>
         <section class="bg-white">
