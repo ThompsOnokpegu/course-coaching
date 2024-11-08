@@ -1,5 +1,5 @@
 <x-layouts.course :topics="$topics">
 
-  <p class="text-xl font-bold">Start from here</p>
+  @livewire('student.take-course', ['lesson' => $lesson])
 
 </x-layouts.course>

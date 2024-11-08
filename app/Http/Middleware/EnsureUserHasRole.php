@@ -20,6 +20,6 @@ class EnsureUserHasRole
             return $next($request);
         }
         
-        return redirect()->route('profile')->with('error','You need higher privilege to access this content');
+        return redirect()->route('login')->with('error','You need higher privilege to access this content');
     }
 }

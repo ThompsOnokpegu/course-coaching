@@ -15,7 +15,8 @@ class CreateCourse extends Component
 
     public function render()
     {
-        return view('livewire.admin.create-course');
+        $courses = Course::all();
+        return view('livewire.admin.create-course',compact('courses'));
     }
 
     public function save(){

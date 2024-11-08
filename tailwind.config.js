@@ -12,7 +12,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                'body': [
+                body: [
                     'Inter', 
                     'ui-sans-serif', 
                     'system-ui', 
@@ -29,7 +29,7 @@ export default {
                     'Segoe UI Symbol', 
                     'Noto Color Emoji'
                 ],
-                    'sans': [
+                sans: [
                     'Inter', 
                     'ui-sans-serif', 
                     'system-ui', 
@@ -45,10 +45,15 @@ export default {
                     'Segoe UI Emoji', 
                     'Segoe UI Symbol', 
                     'Noto Color Emoji'
-                ]
+                ],
+                anton: ['Anton', 'sans-serif']
             },
             colors: {
-                primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"}
+                primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"},
+                deepr_green:{"50":"#CCFF00"},
+                deepr_red:{"50":"#FF0000"},
+                deepr_black:{"50":"555555"},
+                deepr_blue:{"50":"#24AAE0"}
             }
         },
         

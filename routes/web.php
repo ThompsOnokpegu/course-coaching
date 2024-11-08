@@ -1,13 +1,16 @@
 <?php
-
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\CourseController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubscriptionController;
 use App\Livewire\Admin\CreateCourse;
+use App\Livewire\Admin\UpdateLesson;
+use App\Livewire\Admin\ViewCourse;
+use App\Livewire\Admin\ViewTopic;
 use Illuminate\Support\Facades\Route;
 
 
 Route::view('/', 'welcome')->name('home');
+Route::view('/application','choose-plan')->name('signup');
+
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -24,13 +27,20 @@ Route::middleware([])->group(function () {
 
 });
 
+//studend dashboard
 Route::middleware(['auth'])->group(function () {
-    Route::get('/program', [CourseController::class, 'index'])->name('courses.index');
-    //Route::get('/courses/{id}', [CourseController::class, 'show'])->name('courses.show');
+    Route::get('/members', [StudentController::class, 'index'])->name('members');
+    Route::get('/members/{lesson_id}', [StudentController::class, 'lesson'])->name('members.lesson');
 });
-//Route::get('/create',[CourseController::class,'create']);
-//Route::get('course/create',CreateCourse::class)->middleware('auth');
-Route::get('/admin',CreateCourse::class);
+
+//admin
+Route::middleware(['auth','has_role'.':admin'])->group(function(){
+    Route::get('/admin/course',CreateCourse::class)->name('admin.home');
+    Route::get('/admin/course/{id}',ViewCourse::class)->name('course.view');
+    Route::get('/admin/topics/{id}',ViewTopic::class)->name('topic.view');
+    Route::get('/admin/lessons/{id}/update',UpdateLesson::class)->name('lesson.update');
+});
+
 
 
     
