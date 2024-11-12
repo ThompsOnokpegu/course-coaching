@@ -18,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'subscribed' => EnsureUserIsSubscribed::class,
             'has_role' => EnsureUserHasRole::class,
         ]);//user has active subscription-AJ
+        $middleware->validateCsrfTokens(except: [
+            '/subscription/webhook',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
