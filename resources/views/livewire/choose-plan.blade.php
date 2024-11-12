@@ -1,4 +1,4 @@
-<section class="bg-white py-8 antialiased md:py-16">
+<section class="bg-white py-6 antialiased md:py-16">
     <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
       <div class="mx-auto max-w-5xl">
         <h2 class="text-xl font-semibold text-gray-900 sm:text-2xl">Payment</h2>
@@ -51,7 +51,7 @@
                   
                 </div>
               </div>
-            <button type="submit" class="flex w-full items-center justify-center rounded-sm bg-green-700 px-5 mt-8 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4  focus:ring-green-300">Subscribe for ₦{{ $plan }}/{{ $plan==5?"MONTHLY":"QUARTERLY" }}</button>
+            <button type="submit" class="flex w-full items-center justify-center rounded-sm bg-green-700 px-5 mt-8 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4  focus:ring-green-300">Subscribe for ₦{{ $plan }}/{{ $plan==$monthly_plan?"MONTHLY":"QUARTERLY" }}</button>
           </form>
   
           <div class="mt-6 grow sm:mt-8 lg:mt-0">
@@ -64,7 +64,7 @@
   
                 <dl class="flex items-center justify-between gap-4">
                   <dt class="text-base font-normal text-gray-500">Discount</dt>
-                  <dd class="text-base font-medium text-green-500">-₦{{ $plan-$monthly_plan }}</dd>
+                  <dd class="text-base font-medium text-green-600">-₦{{ $plan-$monthly_plan }}</dd>
                 </dl>
   
                
@@ -77,7 +77,7 @@
             </div>
   
             <div class="mt-6 flex items-center justify-center gap-8">
-                <img class="w-auto" src="{{ asset('img/paystack-ii.webp') }}" alt="" />
+                <img class="w-2/3" src="{{ asset('img/paystack-ii.webp') }}" alt="" />
               {{--<img class="h-8 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/paypal.svg" alt="" />
               <img class="hidden h-8 w-auto dark:flex" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/paypal-dark.svg" alt="" />
               <img class="h-8 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/visa.svg" alt="" />
@@ -88,8 +88,8 @@
           </div>
         </div>
   
-        <p class="mt-6 text-center text-gray-500 sm:mt-8 lg:text-left">
-          Payment processed by <a href="https://paystack.com" title="" class="font-medium text-green-500 underline hover:no-underline">Paystack</a> for <a href="https://deeprmarketing.com" title="" class="font-medium text-green-500 underline hover:no-underline">Deepr Marketing</a>
+        <p class="mt-6 text-sm text-center text-gray-500 sm:mt-8 lg:text-left">
+          Payment processed by <a href="https://paystack.com" title="" class="font-medium text-green-600 underline hover:no-underline">Paystack</a> for <a href="https://deeprmarketing.com" title="" class="font-medium text-green-600 underline hover:no-underline">Deepr Marketing</a>
         </p>
       </div>
     </div>
