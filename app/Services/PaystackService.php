@@ -5,6 +5,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
 
@@ -67,6 +68,7 @@ class PaystackService
 
     // Handles subscription creation event
     private function handleSubscriptionCreate($payload){
+        Log::info('subscription.create was fired');
         $status = $payload['data']['status'];
         if($status == 'active'){
             $subscriptionCode = $payload['data']['subscription_code'];
@@ -82,7 +84,7 @@ class PaystackService
             $user->update([
                 'name' => $name,
                 'subscribed' => true,
-                'subscription_end_date' => Carbon::date($nextDate),
+                'subscription_end_date' => now()->addMonth(),
                 'plan_code' => $planCode,
                 'subscription_code' => $subscriptionCode,
                 'customer_code' => $customerCode,
@@ -94,12 +96,12 @@ class PaystackService
             //Password::sendResetLink(['email' => $user->email]);
             
         }
-        return response()->json(['status' => 'success'], 200);
         
     }
 
     // Handles charge.success event for successful payments
     private function handleChargeSuccess($payload){
+        Log::info('charge.success was fired');
         $subscriptionCode = $payload['data']['subscription_code'];
         $user = User::where('subscription_code', $subscriptionCode)->first();
 
@@ -116,15 +118,12 @@ class PaystackService
                     //'subscribed' => true,
                     'email_token' => $emailToken
                 ]);
-            } 
-
-            return response()->json(['status' => 'success'], 200);
-        }
-        
+            }     
+        }    
     }
-
      // Handles final status after invoice update
     private function handleInvoiceUpdate($payload){
+        Log::info('invoice.update was fired');
          $status = $payload['data']['paid'];
          $nextDate = $payload['data']['period_end'];
          $customerCode = $payload['data']['customer']['customer_code'];
@@ -133,11 +132,11 @@ class PaystackService
          if ($user) {
              $user->update([
                 'subscribed' => $status,
-                'subscription_end_date' => $nextDate,
+                'subscription_end_date' => now()->addMonth(),
             ]);
              
          }
-         return response()->json(['status' => 'success'], 200);
+         
     }
  
      // Cancel a subscription using Paystack's subscription disable endpoint

@@ -24,7 +24,8 @@ class User extends Authenticatable
         'role',
         'subscription_code', 
         'customer_code', 
-        'authorization_code', 
+        'authorization_code',
+        'subscription_end_date',
         'plan_code', 
         'subscribed', 
         'email_token'
