@@ -37,7 +37,9 @@ class SubscriptionController extends Controller
     // Handles Paystack callback redirect after payment
     public function handleCallback(Request $request)
     {
-        $this->paystack->handleCallback($request);
+        $response = $this->paystack->handleCallback($request);
+        
+        return view('thank-you',compact('response'));
     }
 
 

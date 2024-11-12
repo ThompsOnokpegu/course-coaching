@@ -22,26 +22,30 @@ class PaystackService
     // 1. Initiate Payment
     public function initiatePayment($email, $amount, $reference, $planCode, $callbackUrl)
     {
-        return Http::withToken($this->secretKey)->post("{$this->baseUrl}/transaction/initialize", [
+        $data = [
             'email' => $email,
             'amount' => $amount * 100, // Convert to kobo
             'reference' => $reference,
             'plan' => $planCode,
             'callback_url' => $callbackUrl
-        ])->json();
+        ];
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->secretKey,
+            'Content-Type' => 'application/json',
+        ])->post("{$this->baseUrl}/transaction/initialize", $data);
+
+        return $response;
     }
     
     public function handleCallback(Request $request)
     {
         $reference = $request->query('reference');
-        $response = Http::withToken(config($this->secretKey))
-            ->get("{$this->baseUrl}/transaction/verify/{$reference}");
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->secretKey,
+            'Content-Type' => 'application/json',
+        ])->get("{$this->baseUrl}/transaction/verify/{$reference}");
 
-        if ($response->json('data.status') === 'success') { 
-            return redirect(route('thank-you'))->with('success', 'Subscription successful');
-        } else {
-            return redirect('/subscription-failed')->with('error', 'Payment failed');
-        }
+        return $response;
     }
 
     public function handleWebhook(Request $request){
@@ -87,7 +91,7 @@ class PaystackService
             
             
             // Send password reset link for account setup
-            Password::sendResetLink(['email' => $user->email]);
+            //Password::sendResetLink(['email' => $user->email]);
             
         }
         return response()->json(['status' => 'success'], 200);
@@ -101,8 +105,10 @@ class PaystackService
 
         if ($user) {
             // Fetch email_token by calling the List Subscriptions API
-            $response = Http::withToken(config($this->secretKey))
-                ->get("{$this->baseUrl}/subscription/{$subscriptionCode}");
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->get("{$this->baseUrl}/subscription/{$subscriptionCode}");
 
             if ($response->successful() && !empty($response->json('data'))) {
                 $emailToken = $response['data']['email_token'];

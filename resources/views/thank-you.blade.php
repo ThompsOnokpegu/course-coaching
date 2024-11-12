@@ -20,15 +20,30 @@
         <main class="relative h-screen flex flex-1 flex-col overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
             <div class="relative flex flex-1 flex-col items-center justify-center pb-16 pt-12">
                 <h1 class="text-2xl font-bold bg-deepr_green-50">5AdsCoaching</h1>
-                <div class="max-w-2xl text-center">
-                    <h1 class="text-3xl font-extrabold text-black sm:text-4xl">Thank you! Now check your email…</h1>
-                    <div class="mt-6 text-base leading-7 text-slate-600">You should get a confirmation email soon, open it up and 
-                        <strong class="font-semibold text-black">follow the INSTRUCTIONS to access your dashboard</strong>
+              
+                @if ($response['status'])
+                    <div class="max-w-2xl text-center">
+                        <h1 class="text-3xl font-extrabold text-black sm:text-4xl">Thank you! Now check your email…</h1>
+                        <div class="mt-6 text-base leading-7 text-slate-600">You should get a confirmation email soon, open it up and 
+                            <strong class="font-semibold text-black">follow the INSTRUCTIONS to access your dashboard.</strong>
+                            If you need help, email me at <span class="underline">aj@deeprmarketing.com</span> with this reference number: <strong class="font-bold text-black bg-deepr_green-50">{{ $response['data']['reference'] }}</strong>
+                        </div>
+                        <a class="inline-flex justify-center rounded-lg text-sm font-semibold py-2.5 px-4 bg-black text-white hover:bg-slate-700 mt-6" href="{{ route('home') }}">
+                        <span>Return to Home</span>
+                        </a>
                     </div>
-                    <a class="inline-flex justify-center rounded-lg text-sm font-semibold py-2.5 px-4 bg-black text-white hover:bg-slate-700 mt-6" href="{{ route('home') }}">
-                    <span>Return to Home</span>
-                    </a>
-                </div>    
+                @else
+                    <div class="max-w-2xl text-center">
+                        <h1 class="text-3xl font-extrabold text-black sm:text-4xl">Oops! Payment failed…</h1>
+                        <div class="mt-6 text-base leading-7 text-slate-600">If you have been debited, you should get automatic reversal within the hour. 
+                            <strong class="font-semibold text-black">For help and support, message me with this reference number:<strong class="font-bold bg-deepr_green-50">{{ $response['data']['reference'] }}</strong> at <span class="underline">aj@deeprmarketing.com</span>
+                        </div>
+                        <a class="inline-flex justify-center rounded-lg text-sm font-semibold py-2.5 px-4 bg-black text-white hover:bg-slate-700 mt-6" href="{{ route('home') }}">
+                        <span>Return to Home</span>
+                        </a>
+                    </div>
+                @endif
+                    
             </div>
             <footer class="relative shrink-0">
                 <div class="relative z-10 flex flex-none items-start justify-center">
