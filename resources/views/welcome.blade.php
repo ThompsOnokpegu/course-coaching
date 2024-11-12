@@ -17,7 +17,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="antialiased font-sans">
-        <section class="bg-white dark:bg-deepr_black-50">
+        <section class="bg-white">
             <div class="py-4 px-4 mx-auto max-w-screen-xl text-center lg:py-5 lg:px-12">
                 
                 <p class="mb-8 text-lg italic text-black lg:text-xl sm:px-16 xl:px-48">Ads Too Expensive Or Not Profitable?</p>
@@ -41,7 +41,7 @@
             </div>
             <div class="py-4 px-4 mx-auto max-w-screen-xl lg:px-12">
 
-                <section class="bg-white dark:bg-gray-900">
+                <section class="bg-white">
                     <div class="grid max-w-screen-xl px-4 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
                         <div class="mr-auto  lg:col-span-7">
                             <ul class="max-w-2xl mb-4 space-y-5 text-lg sm:text-xl text-gray-600 list-disc list-outside">
