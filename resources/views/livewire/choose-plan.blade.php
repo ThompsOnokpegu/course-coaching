@@ -29,8 +29,8 @@
                       </div>
       
                       <div class="ms-4 text-sm">
-                        <label for="dhl" class="font-medium leading-none text-gray-900 dark:text-white"> ${{ $monthly_plan }}/Month </label>
-                        <p id="dhl-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">${{ $monthly_plan }} every month until you cancel</p>
+                        <label for="dhl" class="font-medium leading-none text-gray-900 dark:text-white"> ₦{{ $monthly_plan }}/Month </label>
+                        <p id="dhl-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">₦{{ $monthly_plan }} every month until you cancel</p>
                       </div>
                     </div>
                   </div>
@@ -42,8 +42,8 @@
                       </div>
       
                       <div class="ms-4 text-sm">
-                        <label for="fedex" class="font-medium leading-none text-gray-900 dark:text-white"> ${{ $quarterly_plan }}/Quarter </label>
-                        <p id="fedex-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Save ${{ $quarterly_plan-$monthly_plan }} when you pay for 3 months ahead</p>
+                        <label for="fedex" class="font-medium leading-none text-gray-900 dark:text-white"> ₦{{ $quarterly_plan }}/Quarter </label>
+                        <p id="fedex-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Save ₦{{ $quarterly_plan-$monthly_plan }} when you pay for 3 months ahead</p>
                       </div>
                     </div>
                   </div>
@@ -51,7 +51,7 @@
                   
                 </div>
               </div>
-            <button type="submit" class="flex w-full items-center justify-center rounded-sm bg-green-700 px-5 mt-8 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4  focus:ring-green-300">Subscribe for ${{ $plan }}/{{ $plan==5?"MONTHLY":"QUARTERLY" }}</button>
+            <button type="submit" class="flex w-full items-center justify-center rounded-sm bg-green-700 px-5 mt-8 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4  focus:ring-green-300">Subscribe for ₦{{ $plan }}/{{ $plan==5?"MONTHLY":"QUARTERLY" }}</button>
           </form>
   
           <div class="mt-6 grow sm:mt-8 lg:mt-0">
@@ -59,12 +59,12 @@
               <div class="space-y-2">
                 <dl class="flex items-center justify-between gap-4">
                   <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Usual Amount</dt>
-                  <dd class="text-base font-medium text-gray-900 dark:text-white">${{ $plan==5?$plan:$plan+$monthly_plan }}</dd>
+                  <dd class="text-base font-medium text-gray-900 dark:text-white">₦{{ $plan==$monthly_plan ? $monthly_plan : $quarterly_plan + $monthly_plan }}</dd>
                 </dl>
   
                 <dl class="flex items-center justify-between gap-4">
                   <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Discount</dt>
-                  <dd class="text-base font-medium text-green-500">-${{ $plan-$monthly_plan }}</dd>
+                  <dd class="text-base font-medium text-green-500">-₦{{ $plan-$monthly_plan }}</dd>
                 </dl>
   
                
@@ -72,17 +72,18 @@
   
               <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
                 <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
-                <dd class="text-base font-bold text-gray-900 dark:text-white">${{ $plan }}</dd>
+                <dd class="text-base font-bold text-gray-900 dark:text-white">₦{{ $plan }}</dd>
               </dl>
             </div>
   
             <div class="mt-6 flex items-center justify-center gap-8">
-              <img class="h-8 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/paypal.svg" alt="" />
+                <img class="w-auto" src="{{ asset('img/paystack-ii.webp') }}" alt="" />
+              {{--<img class="h-8 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/paypal.svg" alt="" />
               <img class="hidden h-8 w-auto dark:flex" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/paypal-dark.svg" alt="" />
               <img class="h-8 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/visa.svg" alt="" />
               <img class="hidden h-8 w-auto dark:flex" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/visa-dark.svg" alt="" />
               <img class="h-8 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/mastercard.svg" alt="" />
-              <img class="hidden h-8 w-auto dark:flex" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/mastercard-dark.svg" alt="" />
+              <img class="hidden h-8 w-auto dark:flex" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/mastercard-dark.svg" alt="" /> --}}
             </div>
           </div>
         </div>

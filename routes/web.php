@@ -19,19 +19,19 @@ use Illuminate\Support\Facades\Route;
 //     ->middleware(['auth'])
 //     ->name('profile');
 
-Route::middleware([])->group(function () {
-    Route::view('/', 'welcome')->name('home');
-    Route::view('/thank-you','thank-you')->name('thank-you');
-    Route::get('/application', [SubscriptionController::class, 'subscribe'])->name('subscription.initiate');
-    Route::get('/subscription/callback', [SubscriptionController::class, 'handleCallback'])->name('subscription.callback');
-    Route::post('/webhook', [SubscriptionController::class, 'handleWebhook']);
-
+Route::controller(SubscriptionController::class)->group(function () {
+    Route::get('/', 'home')->name('home');
+    Route::get('/thank-you','thankYou')->name('thank-you');    
+    Route::get('/subscription/initiate','initiatePayment')->name('subscription.initiate');
+    Route::get('/subscription/callback','handleCallback')->name('subscription.callback');
+    Route::post('/subscription/webhook','handleWebhook')->name('subscription.webhook');
+    Route::post('/subscription/cancel','cancelSubscription')->name('subscription.cancel');
 });
 
 //studend dashboard
 Route::middleware(['auth'])->group(function () {
-    Route::get('/members', [StudentController::class, 'index'])->name('members');
-    Route::view('profile','profile')->name('profile');
+    Route::get('/members', [StudentController::class, 'index'])->name('members')->middleware(['subscribed']);
+    Route::view('/profile','profile')->name('profile');
     Route::get('/members/{lesson_id}', [StudentController::class, 'lesson'])->name('members.lesson')->middleware(['subscribed']);
 });
 

@@ -16,13 +16,17 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('role')->default('user');
-            $table->boolean('is_subscribed')->default(false);
-            $table->string('paystack_customer_code')->nullable();
-            $table->string('paystack_auth_code')->nullable();
+            //subscription data
+            $table->boolean('subscribed')->default(false);
+            $table->string('subscription_code')->nullable();
+            $table->string('customer_code')->nullable();
+            $table->string('authorization_code')->nullable();
             $table->string('plan_code')->nullable();
+            $table->string('email_token')->nullable();
             $table->dateTime('subscription_end_date')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });
