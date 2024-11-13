@@ -2,11 +2,9 @@
 namespace App\Services;
 
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
 
 class PaystackService
@@ -78,7 +76,6 @@ class PaystackService
             $name = $payload['data']['customer']['first_name'];
             $planCode = $payload['data']['plan']['plan_code'];
             $authorizationCode = $payload['data']['authorization']['authorization_code'];
-            $nextDate = $payload['data']['next_payment_date'];
 
             $user = User::where('email',$email)->first();  
             $user->update([
@@ -93,7 +90,7 @@ class PaystackService
             
             
             // Send password reset link for account setup
-            //Password::sendResetLink(['email' => $user->email]);
+            Password::sendResetLink(['email' => $user->email]);    
             
         }
         
@@ -145,8 +142,10 @@ class PaystackService
          $user = User::where('id', $user->id)->first();
  
          if ($user) {
-             Http::withToken(config($this->secretKey))
-                 ->post('https://api.paystack.co/subscription/disable', [
+            Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->post('https://api.paystack.co/subscription/disable', [
                      'code' => $user->subscription_code,
                      'token' => $user->email_token
                  ]);
