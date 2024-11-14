@@ -71,9 +71,6 @@ class PaystackService
                 case 'subscription.create':
                     $this->handleSubscriptionCreate($payload);
                     return response('Webhook Processed', 200);
-                case 'charge.success':
-                    $this->handleChargeSuccess($payload);
-                    return response('Webhook Processed', 200);
                 case 'invoice.update':
                     $this->handleInvoiceUpdate($payload);
                     return response('Webhook Processed', 200);
@@ -119,21 +116,7 @@ class PaystackService
         }
         
     }
-
-    // Handles charge.success event for successful payments
-    private function handleChargeSuccess($payload){
-        $customerCode = $payload['data']['customer']['customer_code'];
-        $user = User::where('customer_code', $customerCode)->first();
-
-        if($user->status == 'attention'){
-            /*user is renewing expired subscription*/
-            //update auth_code assuming the user paid with a different card    
-            $user->update([
-                'authorization_code' => $payload['data']['authorization']['authorization_code']
-            ]);
-        } 
-    }
-     // Handles final status after invoice update
+    // Handles final status after invoice update
     private function handleInvoiceUpdate($payload){
 
          $paid = $payload['data']['paid'];//boolean
@@ -146,6 +129,7 @@ class PaystackService
                 'subscribed' => $paid,
                 'status' => $status,
                 'subscription_end_date' => $paid ? now()->addMonth(): now(),
+                'authorization_code' => $payload['data']['authorization']['authorization_code']
             ]);   
          }     
     }   
