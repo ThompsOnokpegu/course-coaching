@@ -121,7 +121,7 @@ class PaystackService
 
     // Handles charge.success event for successful payments
     private function handleChargeSuccess($payload){
-        $customerCode = $payload['data']['customer_code'];
+        $customerCode = $payload['data']['customer']['customer_code'];
         $user = User::where('customer_code', $customerCode)->first();
         $subscriptionCode = $user->subscription_code;
 
