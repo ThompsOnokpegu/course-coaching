@@ -91,12 +91,12 @@ class PaystackService
         $status = $payload['data']['status'];
         if($status == 'active'){
             $subscriptionCode = $payload['data']['subscription_code'];
-
             $customerCode = $payload['data']['customer']['customer_code'];
             $email = $payload['data']['customer']['email'];
             $name = $payload['data']['customer']['first_name'];
             $planCode = $payload['data']['plan']['plan_code'];
             $authorizationCode = $payload['data']['authorization']['authorization_code'];
+            $emailToken = $payload['data']['email_token'];
 
             $user = User::where('email',$email)->first();  
             $user->update([
@@ -106,6 +106,7 @@ class PaystackService
                 'subscription_end_date' => now()->addMonth(),
                 'plan_code' => $planCode,
                 'subscription_code' => $subscriptionCode,
+                'email_token' => $emailToken,
                 'customer_code' => $customerCode,
                 'authorization_code' => $authorizationCode,
             ]);
@@ -123,27 +124,12 @@ class PaystackService
     private function handleChargeSuccess($payload){
         $customerCode = $payload['data']['customer']['customer_code'];
         $user = User::where('customer_code', $customerCode)->first();
-        $subscriptionCode = $user->subscription_code;
 
-        if (($user->subscribed == true && $user->email_token == null) || $user->subscribed == true && $user->status == 'cancelled' ) {
-            /*user is subscribed to a plan*/
-            // Fetch email_token by calling the Fetch Subscription API
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
-                'Content-Type' => 'application/json',
-            ])->get("{$this->baseUrl}/subscription/{$subscriptionCode}");
-
-            if ($response->successful() && !empty($response->json('data'))) {
-                $emailToken = $response['data']['email_token'];
-                $user->update([
-                    //'subscribed' => true,
-                    'email_token' => $emailToken
-                ]);
-            }     
-        }elseif($user->status == 'attention' && $user->email_token != null ){
-            /*user is renewing expired subscription*/    
+        if($user->status == 'attention'){
+            /*user is renewing expired subscription*/
+            //update auth_code assuming the user paid with a different card    
             $user->update([
-                'authorization_code' => $payload['data']['authorization']['authorization_code']//necessary if the user pay with a different card
+                'authorization_code' => $payload['data']['authorization']['authorization_code']
             ]);
         } 
     }
@@ -160,9 +146,7 @@ class PaystackService
                 'subscribed' => $paid,
                 'status' => $status,
                 'subscription_end_date' => $paid ? now()->addMonth(): now(),
-            ]);
-             
-         }
-         
+            ]);   
+         }     
     }   
 }
