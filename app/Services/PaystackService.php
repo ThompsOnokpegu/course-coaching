@@ -74,6 +74,9 @@ class PaystackService
                 case 'invoice.update':
                     $this->handleInvoiceUpdate($payload);
                     return response('Webhook Processed', 200);
+                case 'subscription.complete':
+                    $this->handleSubscriptionComplete($payload);
+                    return response('Webhook Processed', 200);
                 default:
                     # code...
                     break;
@@ -97,7 +100,6 @@ class PaystackService
 
             $user = User::where('email',$email)->first();  
             $user->update([
-                'name' => $name,
                 'subscribed' => true,
                 'status' => $status,
                 'subscription_end_date' => now()->addMonth(),
@@ -132,5 +134,16 @@ class PaystackService
                 'authorization_code' => $payload['data']['authorization']['authorization_code']
             ]);   
          }     
-    }   
+    }  
+    
+    //handles subscription status that changes from non-renewing to complete
+    public function handleSubscriptionComplete($payload){
+        $user = User::where('subscription_code',$payload['data']['subscription_code']);
+        if($user){
+            $user->update([
+                'status' => $payload['data']['status'],
+                'subscribed' => false
+            ]);
+        }
+    }
 }
