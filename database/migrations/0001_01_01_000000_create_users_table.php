@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('role')->default('user');
             //subscription data
             $table->boolean('subscribed')->default(false);
+            $table->string('status')->nullable();
             $table->string('subscription_code')->nullable();
             $table->string('customer_code')->nullable();
             $table->string('authorization_code')->nullable();

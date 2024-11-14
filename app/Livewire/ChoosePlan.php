@@ -12,9 +12,9 @@ use illuminate\Support\Str;
 class ChoosePlan extends Component
 {
     
-    public $monthly_plan = 8900;
-    public $quarterly_plan = 17800;
-    public $plan=8900;
+    public $monthly_plan = 9000;
+    public $quarterly_plan = 18000;
+    public $plan=9000;
     #[Validate('required')]
     #[Validate('email')]
     public $billing_email;
@@ -33,7 +33,7 @@ class ChoosePlan extends Component
         $paystack = new PaystackService;
         $this->validate();
            
-        $planCode = $this->plan == 5 ? env('PLAN_CODE_MONTLY') : env('PLAN_CODE_QUARTERLY');
+        $planCode = $this->plan == $this->monthly_plan ? env('PLAN_CODE_MONTLY') : env('PLAN_CODE_QUARTERLY');
         $amount = 500; // $5
         $reference = uniqid('sub_');
         $callbackUrl = route('subscription.callback');

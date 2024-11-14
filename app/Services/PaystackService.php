@@ -4,7 +4,6 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 
 class PaystackService
@@ -48,25 +47,43 @@ class PaystackService
     }
 
     public function handleWebhook(Request $request){
-        $payload = $request->all();
-        $event = $payload['event'];
-        switch ($event) {
-            case 'subscription.create':
-                return $this->handleSubscriptionCreate($payload);
-            case 'charge.success':
-                return $this->handleChargeSuccess($payload);
-            case 'invoice.update':
-                return $this->handleInvoiceUpdate($payload);
-            default:
-                # code...
-                break;
+        // Check if it's a POST request with Paystack signature header
+        if ((strtoupper($_SERVER['REQUEST_METHOD']) != 'POST' ) || !array_key_exists('HTTP_X_PAYSTACK_SIGNATURE', $_SERVER) ) {
+            exit();
         }
-        return response()->json(['status' => 'success'], 200);
+
+        // Retrieve the payload from the request
+        $payload = $request->getContent();
+
+        // Retrieve the Paystack signature from the request headers
+        $paystackSignature = $request->header('X-Paystack-Signature');
+
+        // Calculate your own HMAC signature
+        $generatedSignature = hash_hmac('sha512', $payload, env('PAYSTACK_SECRET_KEY'));
+
+        // Verify if the Paystack signature matches the generated one
+        if ($paystackSignature === $generatedSignature) {
+            $event = $payload['event'];
+            switch ($event) {
+                case 'subscription.create':
+                    $this->handleSubscriptionCreate($payload);
+                    return response('Webhook Processed', 200);
+                case 'charge.success':
+                    $this->handleChargeSuccess($payload);
+                    return response('Webhook Processed', 200);
+                case 'invoice.update':
+                    $this->handleInvoiceUpdate($payload);
+                    return response('Webhook Processed', 200);
+                default:
+                    # code...
+                    break;
+            }
+        }
+        
     }
 
     // Handles subscription creation event
     private function handleSubscriptionCreate($payload){
-        Log::info('subscription.create was fired');
         $status = $payload['data']['status'];
         if($status == 'active'){
             $subscriptionCode = $payload['data']['subscription_code'];
@@ -81,6 +98,7 @@ class PaystackService
             $user->update([
                 'name' => $name,
                 'subscribed' => true,
+                'status' => $status,
                 'subscription_end_date' => now()->addMonth(),
                 'plan_code' => $planCode,
                 'subscription_code' => $subscriptionCode,
@@ -88,22 +106,24 @@ class PaystackService
                 'authorization_code' => $authorizationCode,
             ]);
             
-            
-            // Send password reset link for account setup
-            Password::sendResetLink(['email' => $user->email]);    
-            
+            //do not send reset link if user is reactivating a cancelled subscription
+            if($user->password === null){
+                // Send password reset link for new account setup
+                Password::sendResetLink(['email' => $user->email]);    
+            } 
         }
         
     }
 
     // Handles charge.success event for successful payments
     private function handleChargeSuccess($payload){
-        Log::info('charge.success was fired');
-        $subscriptionCode = $payload['data']['subscription_code'];
-        $user = User::where('subscription_code', $subscriptionCode)->first();
+        $customerCode = $payload['data']['customer_code'];
+        $user = User::where('customer_code', $customerCode)->first();
+        $subscriptionCode = $user->subscription_code;
 
-        if ($user) {
-            // Fetch email_token by calling the List Subscriptions API
+        if (($user->subscribed == true && $user->email_token == null) || $user->subscribed == true && $user->status == 'cancelled' ) {
+            /*user is subscribed to a plan*/
+            // Fetch email_token by calling the Fetch Subscription API
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->secretKey,
                 'Content-Type' => 'application/json',
@@ -116,56 +136,29 @@ class PaystackService
                     'email_token' => $emailToken
                 ]);
             }     
-        }    
+        }elseif($user->status == 'attention' && $user->email_token != null ){
+            /*user is renewing expired subscription*/    
+            $user->update([
+                'authorization_code' => $payload['data']['authorization']['authorization_code']//necessary if the user pay with a different card
+            ]);
+        } 
     }
      // Handles final status after invoice update
     private function handleInvoiceUpdate($payload){
-        Log::info('invoice.update was fired');
-         $status = $payload['data']['paid'];
-         $nextDate = $payload['data']['period_end'];
+
+         $paid = $payload['data']['paid'];//boolean
          $customerCode = $payload['data']['customer']['customer_code'];
+         $status = $payload['data']['subscription']['status'];//string
          $user = User::where('customer_code', $customerCode)->first();
  
          if ($user) {
              $user->update([
-                'subscribed' => $status,
-                'subscription_end_date' => now()->addMonth(),
+                'subscribed' => $paid,
+                'status' => $status,
+                'subscription_end_date' => $paid ? now()->addMonth(): now(),
             ]);
              
          }
          
-    }
- 
-     // Cancel a subscription using Paystack's subscription disable endpoint
-    public function cancelSubscription(Request $request){
-         $user = $request->user();
-         $user = User::where('id', $user->id)->first();
- 
-         if ($user) {
-            Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
-                'Content-Type' => 'application/json',
-            ])->post('https://api.paystack.co/subscription/disable', [
-                     'code' => $user->subscription_code,
-                     'token' => $user->email_token
-                 ]);
- 
-             $user->update(['subscribed' => false]);
-         }
- 
-         return redirect('/profile')->with('status', 'Subscription canceled');
-    }
-
-    // Handles invoice.payment_failed event for failed payments
-    private function handlePaymentFailed($payload)
-    {
-        $customerCode = $payload['data']['customer']['customer_code'];
-        $user = User::where('customer_code', $customerCode)->first();
-
-        if ($user) {
-            $user->update(['subscribed' => false]);
-        }
-    }
-
-   
+    }   
 }

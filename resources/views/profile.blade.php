@@ -13,11 +13,21 @@
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <livewire:profile.cancel-subscription-form />
+            @if(Auth::user()->subscribed)
+                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                    <div class="max-w-xl">
+                        <livewire:profile.cancel-subscription-form />
+                    </div>
                 </div>
-            </div>
+            @endif
+
+            @if(Auth::user()->status != 'active')
+                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                    <div class="max-w-xl">
+                        <livewire:profile.renew-subscription-form />
+                    </div>
+                </div>
+            @endif
 
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">

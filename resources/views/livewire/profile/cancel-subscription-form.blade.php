@@ -25,7 +25,7 @@ new class extends Component
         
          $user = Auth::user();
         
-         if ($user) {
+         if ($user->subscribed == true) {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->secretKey,
                 'Content-Type' => 'application/json',
@@ -35,7 +35,7 @@ new class extends Component
                     'token' => $user->email_token
                 ]);
             
-            $user->update(['subscribed' => false]);
+            $user->update(['subscribed' => false,'status'=>'cancelled']);
          }
 
         $this->redirect(route('profile'), navigate: true);
