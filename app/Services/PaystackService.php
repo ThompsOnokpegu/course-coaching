@@ -67,7 +67,7 @@ class PaystackService
         if ($paystackSignature === $generatedSignature) {
             $payload = $request->all();//array
             $event = $payload['event'];
-            Log::info($payload);
+           
             switch ($event) {
                 case 'subscription.create':
                     $this->handleSubscriptionCreate($payload);
@@ -88,7 +88,7 @@ class PaystackService
 
     // Handles subscription creation event
     private function handleSubscriptionCreate($payload){
-        Log::info('subscription.create fired');
+        
         $status = $payload['data']['status'];
         if($status == 'active'){
             $subscriptionCode = $payload['data']['subscription_code'];
@@ -110,17 +110,12 @@ class PaystackService
                     'customer_code' => $customerCode,
                     'authorization_code' => $authorizationCode,
                 ]);
-            } 
-            //do not send reset link if user is reactivating a cancelled subscription
-            if($user->password === null){
-                // Send password reset link for new account setup
-                //Password::sendResetLink(['email' => $user->email]);  
                 $token = Password::createToken($user);
-                $user->notify(new InitialSetupNotification($token));  
-            } 
-        }
-        
+                $user->notify(new InitialSetupNotification($token));
+            }    
+        }    
     }
+
     // Handles final status after invoice update
     private function handleInvoiceUpdate($payload){
 
