@@ -24,10 +24,7 @@ class InitialSetupNotification extends ResetPasswordNotification
      *
      * @return array<int, string>
      */
-    public function via($notifiable): array
-    {
-        return ['mail'];
-    }
+    
 
     /**
      * Get the mail representation of the notification.

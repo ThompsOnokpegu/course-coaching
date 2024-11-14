@@ -15,7 +15,7 @@ class EnsureUserIsSubscribed
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->guard('web')->check() && auth()->guard('web')->user()->is_subscribed) {
+        if (auth()->guard('web')->check() && auth()->guard('web')->user()->subscribed) {
             return $next($request);
         }
     
