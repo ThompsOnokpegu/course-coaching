@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
+use App\Notifications\InitialSetupNotification;
 
 class PaystackService
 {
@@ -64,7 +65,7 @@ class PaystackService
 
         // Verify if the Paystack signature matches the generated one
         if ($paystackSignature === $generatedSignature) {
-            $payload = $request->all();
+            $payload = $request->all();//array
             $event = $payload['event'];
             Log::info($payload);
             switch ($event) {
@@ -113,7 +114,9 @@ class PaystackService
             //do not send reset link if user is reactivating a cancelled subscription
             if($user->password === null){
                 // Send password reset link for new account setup
-                Password::sendResetLink(['email' => $user->email]);    
+                //Password::sendResetLink(['email' => $user->email]);  
+                $token = Password::createToken($user);
+                $user->notify(new InitialSetupNotification($token));  
             } 
         }
         
