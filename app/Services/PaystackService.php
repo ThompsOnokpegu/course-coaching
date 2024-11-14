@@ -64,6 +64,7 @@ class PaystackService
 
         // Verify if the Paystack signature matches the generated one
         if ($paystackSignature === $generatedSignature) {
+            $payload = $request->all();
             $event = $payload['event'];
             Log::info($payload);
             switch ($event) {
