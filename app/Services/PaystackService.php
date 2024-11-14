@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 
 class PaystackService
@@ -64,6 +65,7 @@ class PaystackService
         // Verify if the Paystack signature matches the generated one
         if ($paystackSignature === $generatedSignature) {
             $event = $payload['event'];
+            Log::info($payload);
             switch ($event) {
                 case 'subscription.create':
                     $this->handleSubscriptionCreate($payload);
@@ -84,6 +86,7 @@ class PaystackService
 
     // Handles subscription creation event
     private function handleSubscriptionCreate($payload){
+        Log::info('subscription.create fired');
         $status = $payload['data']['status'];
         if($status == 'active'){
             $subscriptionCode = $payload['data']['subscription_code'];
