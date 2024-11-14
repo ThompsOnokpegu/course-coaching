@@ -74,7 +74,7 @@ class PaystackService
                 case 'invoice.update':
                     $this->handleInvoiceUpdate($payload);
                     return response('Webhook Processed', 200);
-                case 'subscription.complete':
+                case 'subscription.disable':
                     $this->handleSubscriptionComplete($payload);
                     return response('Webhook Processed', 200);
                 default:
@@ -93,23 +93,23 @@ class PaystackService
             $subscriptionCode = $payload['data']['subscription_code'];
             $customerCode = $payload['data']['customer']['customer_code'];
             $email = $payload['data']['customer']['email'];
-            $name = $payload['data']['customer']['first_name'];
             $planCode = $payload['data']['plan']['plan_code'];
             $authorizationCode = $payload['data']['authorization']['authorization_code'];
             $emailToken = $payload['data']['email_token'];
 
-            $user = User::where('email',$email)->first();  
-            $user->update([
-                'subscribed' => true,
-                'status' => $status,
-                'subscription_end_date' => now()->addMonth(),
-                'plan_code' => $planCode,
-                'subscription_code' => $subscriptionCode,
-                'email_token' => $emailToken,
-                'customer_code' => $customerCode,
-                'authorization_code' => $authorizationCode,
-            ]);
-            
+            $user = User::where('email',$email)->first(); 
+            if($user){
+                $user->update([
+                    'subscribed' => true,
+                    'status' => $status,
+                    'subscription_end_date' => now()->addMonth(),
+                    'plan_code' => $planCode,
+                    'subscription_code' => $subscriptionCode,
+                    'email_token' => $emailToken,
+                    'customer_code' => $customerCode,
+                    'authorization_code' => $authorizationCode,
+                ]);
+            } 
             //do not send reset link if user is reactivating a cancelled subscription
             if($user->password === null){
                 // Send password reset link for new account setup
