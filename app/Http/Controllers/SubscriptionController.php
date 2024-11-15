@@ -20,7 +20,12 @@ class SubscriptionController extends Controller
     public function home(){
         return view('welcome');
     }
-
+    public function emailPreview(){
+        $user = User::where('id',1)->first();
+        if($user){
+            return view('emails.course-instructions',compact('user'));
+        }
+    }
     public function thankYou(){
         return view('thank-you');
     }

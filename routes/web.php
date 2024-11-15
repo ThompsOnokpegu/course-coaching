@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Route;
 // Route::view('profile', 'profile')
 //     ->middleware(['auth'])
 //     ->name('profile');
-
 Route::controller(SubscriptionController::class)->group(function () {
+    Route::get('/email','emailPreview')->name('email-preview');
     Route::get('/', 'home')->name('home');
     Route::get('/thank-you','thankYou')->name('thank-you');    
     Route::get('/subscription/initiate','initiatePayment')->name('subscription.initiate');

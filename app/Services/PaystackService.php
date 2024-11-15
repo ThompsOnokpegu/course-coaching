@@ -1,12 +1,14 @@
 <?php
 namespace App\Services;
 
+use App\Mail\CourseInstructions;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use App\Notifications\InitialSetupNotification;
+use Illuminate\Support\Facades\Mail;
 
 class PaystackService
 {
@@ -110,8 +112,11 @@ class PaystackService
                     'customer_code' => $customerCode,
                     'authorization_code' => $authorizationCode,
                 ]);
+                //send reset password notification
                 $token = Password::createToken($user);
                 $user->notify(new InitialSetupNotification($token));
+                // Send welcome email with course instructions
+                Mail::to($user->email)->send(new CourseInstructions($user));
             }    
         }    
     }
